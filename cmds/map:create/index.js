@@ -13,7 +13,12 @@ module.exports = (program) => {
             process.exit(0);
         }
 
-        logger.error(`${err.code}: ${err.message}`);
+        let errMessage = err.message;
+        if (err.code) {
+            errMessage = `${err.code}: ${errMessage}`;
+        }
+
+        logger.error(errMessage);
         process.exit(1);
     }
 
