@@ -68,6 +68,7 @@ module.exports = (program) => {
         .option(
             '-s, --spaces <spaces>',
             `spaces to include in output file ${defaultString(defaults.spaces)}`,
+            parseInt,
             defaults.spaces
         )
         .action(run);
