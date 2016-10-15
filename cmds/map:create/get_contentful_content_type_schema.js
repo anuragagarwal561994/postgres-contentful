@@ -33,7 +33,8 @@ function getContentfulCredentials(accessToken) {
                     return true;
                 }
                 return 'Please enter your Contentful access_token';
-            }
+            },
+            when: !process.env.CONTENTFUL_ACCESS_TOKEN,
         },
         {
             name: 'space',
@@ -44,7 +45,8 @@ function getContentfulCredentials(accessToken) {
                     return true;
                 }
                 return 'Please enter your space id';
-            }
+            },
+            when: !process.env.CONTENTFUL_SPACE_ID,
         },
     ];
 
@@ -53,6 +55,12 @@ function getContentfulCredentials(accessToken) {
 
 module.exports = co.wrap(function* exec(accessToken) {
     const contentfulCredentials = yield getContentfulCredentials(accessToken);
+
+    Object.assign(contentfulCredentials, {
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+        space: process.env.CONTENTFUL_SPACE_ID
+    });
+
     const contentfulSchema = yield getContentfulSchema(contentfulCredentials);
     const {contentTypeIndex} = yield getContentTypeInformation(contentfulSchema);
 
