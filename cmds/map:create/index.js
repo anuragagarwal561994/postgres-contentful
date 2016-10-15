@@ -1,6 +1,9 @@
 'use strict';
 
+const jsonfile = require('jsonfile');
+const async = require('../../helpers').async;
 const getTableSchema = require('./get_database_table_schema');
+const getContentTypeSchema = require('./get_contentful_content_type_schema');
 
 module.exports = (program) => {
     const logger = program.log;
@@ -14,12 +17,27 @@ module.exports = (program) => {
         process.exit(1);
     }
 
-    function run() {
-        getTableSchema()
-            .then(console.log)
-            .then(exit)
-            .catch(exit);
-    }
+    const run = async(function *(file = 'mappings.json', spaces = 4) {
+        try {
+            const tableSchema = yield getTableSchema();
+            const contentTypeSchema = yield getContentTypeSchema();
+            const contentTypeFields = contentTypeSchema.fields.map(o => o.id);
+            const mappings = contentTypeFields.reduce((hash, value) => {
+                hash[value] = null;
+                return hash;
+            }, {});
+
+            const JSONcontent = {
+                tableSchema,
+                contentTypeSchema,
+                mappings,
+            };
+
+            jsonfile.writeFile(file, JSONcontent, {spaces}, exit);
+        } catch(err) {
+            exit(err);
+        }
+    });
 
     program
         .command('map:create')
