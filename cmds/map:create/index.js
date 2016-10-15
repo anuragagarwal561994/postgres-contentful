@@ -1,6 +1,7 @@
 'use strict';
 
 const co = require('co');
+const chalk = require('chalk');
 const jsonfile = require('jsonfile');
 const getTableSchema = require('./get_database_table_schema');
 const getContentTypeSchema = require('./get_contentful_content_type_schema');
@@ -49,12 +50,26 @@ module.exports = (program) => {
         }
     });
 
+    const defaults = {
+        output: 'mappings.json',
+        spaces: 4,
+    };
+    const defaultString = (value) => chalk.cyan(`[default: ${value}]`);
+
     program
         .command('map:create')
         .version('0.0.0')
         .description('Generates postgres to contentful mapping file')
-        .option('-o, --output <file>', 'output json file', 'mappings.json')
-        .option('-s, --spaces <spaces>', 'spaces to be used in output json file', 4)
+        .option(
+            '-o, --output <file>',
+            `output json file ${defaultString(defaults.output)}`,
+            defaults.output
+        )
+        .option(
+            '-s, --spaces <spaces>',
+            `spaces to include in output file ${defaultString(defaults.spaces)}`,
+            defaults.spaces
+        )
         .action(run);
 
 };

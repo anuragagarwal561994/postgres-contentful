@@ -22,6 +22,7 @@
   "bugs": "https://github.com/anuragagarwal561994/postgres-contentful/issues",
   "dependencies": {
     "autocmdr": "~0.0.7",
+    "chalk": "^1.1.3",
     "co": "^4.6.0",
     "commander": "~2.0.0",
     "contentful": "^3.6.4",
