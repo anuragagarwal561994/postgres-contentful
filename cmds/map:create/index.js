@@ -10,6 +10,7 @@ module.exports = (program) => {
 
     function exit(err) {
         if (!err) {
+            logger.info('Mappings file created successfully');
             process.exit(0);
         }
 
