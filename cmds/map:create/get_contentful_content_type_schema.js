@@ -4,24 +4,7 @@ const co = require('co');
 const inquirer = require('inquirer');
 const contentful = require('contentful');
 
-function getContentTypeInformation(contentfulSchema) {
-    const contentTypes = contentfulSchema.items;
-    const question = {
-        name: 'contentTypeIndex',
-        type: 'list',
-        message: 'Choose a content type:',
-        choices: contentTypes.map((o, index) => ({name: o.name, value: index})),
-    };
-
-    return inquirer.prompt(question);
-}
-
-function getContentfulSchema(contentfulCredentials) {
-    const client = contentful.createClient(contentfulCredentials);
-    return client.getContentTypes();
-}
-
-function getContentfulCredentials(accessToken) {
+function getContentfulInformation(accessToken) {
     const questions = [
         {
             name: 'accessToken',
@@ -48,21 +31,31 @@ function getContentfulCredentials(accessToken) {
             },
             when: !process.env.CONTENTFUL_SPACE_ID,
         },
+        {
+            name: 'contentTypeSchema',
+            type: 'list',
+            message: 'Choose a content type:',
+            choices: co.wrap(function *getChoices(credentials) {
+                Object.assign({
+                    accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+                    space: process.env.CONTENTFUL_SPACE_ID
+                }, credentials);
+
+                const client = contentful.createClient(credentials);
+                const schema = yield client.getContentTypes();
+                const contentTypes = schema.items;
+
+                return contentTypes.map((o, index) => ({
+                    name: o.name,
+                    value: schema.items[index]
+                }));
+            }),
+        },
     ];
 
     return inquirer.prompt(questions);
 }
 
 module.exports = co.wrap(function* exec(accessToken) {
-    const contentfulCredentials = yield getContentfulCredentials(accessToken);
-
-    Object.assign(contentfulCredentials, {
-        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
-        space: process.env.CONTENTFUL_SPACE_ID
-    });
-
-    const contentfulSchema = yield getContentfulSchema(contentfulCredentials);
-    const {contentTypeIndex} = yield getContentTypeInformation(contentfulSchema);
-
-    return contentfulSchema.items[contentTypeIndex];
+    return (yield getContentfulInformation(accessToken)).contentTypeSchema;
 });
