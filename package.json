@@ -22,9 +22,9 @@
   "bugs": "https://github.com/anuragagarwal561994/postgres-contentful/issues",
   "dependencies": {
     "autocmdr": "~0.0.7",
-    "co": "^4.6.0",
-    "co-prompt": "^1.0.0",
-    "commander": "~2.0.0"
+    "commander": "~2.0.0",
+    "inquirer": "^1.2.2",
+    "pg-json-schema-export": "^0.13.7"
   },
   "devDependencies": {}
 }
