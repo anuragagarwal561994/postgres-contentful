@@ -11,7 +11,6 @@ require('autocmdr/lib/config')(program);
 require('autocmdr/lib/help')(program);
 
 
-
 program
 	.parse(process.argv);
 

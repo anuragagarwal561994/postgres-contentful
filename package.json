@@ -21,9 +21,10 @@
   "license": "MIT",
   "bugs": "https://github.com/anuragagarwal561994/postgres-contentful/issues",
   "dependencies": {
-    "commander": "~2.0.0",
-    "autocmdr": "~0.0.7"
+    "autocmdr": "~0.0.7",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "~2.0.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
