@@ -24,8 +24,9 @@ module.exports = (program) => {
 
     const run = co.wrap(function *exec({output, spaces}) {
         try {
+            const contentfulAccessToken = program.config.get('access_token');
             const tableSchema = yield getTableSchema();
-            const contentTypeSchema = yield getContentTypeSchema();
+            const contentTypeSchema = yield getContentTypeSchema(contentfulAccessToken);
             const contentTypeFields = contentTypeSchema.fields.map(o => o.id);
             const mappings = contentTypeFields.reduce((hash, value) => {
                 hash[value] = null;

@@ -21,12 +21,13 @@ function getContentfulSchema(contentfulCredentials) {
     return client.getContentTypes();
 }
 
-function getContentfulCredentials() {
+function getContentfulCredentials(accessToken) {
     const questions = [
         {
             name: 'accessToken',
             type: 'input',
             message: 'Enter your Contentful access_token:',
+            default: accessToken,
             validate(accessToken) {
                 if (accessToken.length) {
                     return true;
@@ -50,8 +51,8 @@ function getContentfulCredentials() {
     return inquirer.prompt(questions);
 }
 
-module.exports = co.wrap(function* exec() {
-    const contentfulCredentials = yield getContentfulCredentials();
+module.exports = co.wrap(function* exec(accessToken) {
+    const contentfulCredentials = yield getContentfulCredentials(accessToken);
     const contentfulSchema = yield getContentfulSchema(contentfulCredentials);
     const {contentTypeIndex} = yield getContentTypeInformation(contentfulSchema);
 
