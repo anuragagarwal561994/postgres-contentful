@@ -1,0 +1,29 @@
+{
+  "name": "postgres-contentful",
+  "version": "0.0.0",
+  "description": "A CLI app to insert content from a postgresSQL database.table to Contentful.com content type.",
+  "private": true,
+  "bin": {
+    "postgres-contentful": "./bin/postgres-contentful"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "author": {
+    "name": "Anurag Agarwal",
+    "email": "anurag.agarwal561994@gmail.com",
+    "url": "https://github.com/anuragagarwal561994"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anuragagarwal561994/postgres-contentful"
+  },
+  "license": "MIT",
+  "bugs": "https://github.com/anuragagarwal561994/postgres-contentful/issues",
+  "dependencies": {
+    "commander": "~2.0.0",
+    "autocmdr": "~0.0.7"
+  },
+  "devDependencies": {
+  }
+}
