@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-var program  = require('commander');
+var program = require('commander');
 
 require('autocmdr/lib/logger')(program);
 require('autocmdr/lib/loader')(program);
@@ -12,10 +12,10 @@ require('autocmdr/lib/help')(program);
 
 
 program
-	.parse(process.argv);
+    .parse(process.argv);
 
-if (program.args.length < 1 ) {
-	console.log('No command specified. See \'postgres-contentful --help\':');
-	program.outputHelp();
-	process.exit(1);
+if (program.args.length < 1) {
+    console.log('No command specified. See \'postgres-contentful --help\':');
+    program.outputHelp();
+    process.exit(1);
 }
