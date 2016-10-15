@@ -1,8 +1,8 @@
 'use strict';
 
+const co = require('co');
 const inquirer = require('inquirer');
 const contentful = require('contentful');
-const async = require('../../helpers').async;
 
 function getContentTypeInformation(contentfulSchema) {
     const contentTypes = contentfulSchema.items;
@@ -50,7 +50,7 @@ function getContentfulCredentials() {
     return inquirer.prompt(questions);
 }
 
-module.exports = async(function *() {
+module.exports = co.wrap(function* exec() {
     const contentfulCredentials = yield getContentfulCredentials();
     const contentfulSchema = yield getContentfulSchema(contentfulCredentials);
     const {contentTypeIndex} = yield getContentTypeInformation(contentfulSchema);

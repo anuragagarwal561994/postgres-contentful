@@ -1,7 +1,7 @@
 'use strict';
 
+const co = require('co');
 const jsonfile = require('jsonfile');
-const async = require('../../helpers').async;
 const getTableSchema = require('./get_database_table_schema');
 const getContentTypeSchema = require('./get_contentful_content_type_schema');
 
@@ -22,7 +22,7 @@ module.exports = (program) => {
         process.exit(1);
     }
 
-    const run = async(function *(file = 'mappings.json', spaces = 4) {
+    const run = co.wrap(function *exec({output, spaces}) {
         try {
             const tableSchema = yield getTableSchema();
             const contentTypeSchema = yield getContentTypeSchema();
@@ -38,8 +38,8 @@ module.exports = (program) => {
                 mappings,
             };
 
-            jsonfile.writeFile(file, JSONcontent, {spaces}, exit);
-        } catch(err) {
+            jsonfile.writeFile(output, JSONcontent, {spaces}, exit);
+        } catch (err) {
             exit(err);
         }
     });
@@ -48,6 +48,8 @@ module.exports = (program) => {
         .command('map:create')
         .version('0.0.0')
         .description('Generates postgres to contentful mapping file')
+        .option('-o, --output <file>', 'output json file', 'mappings.json')
+        .option('-s, --spaces <spaces>', 'spaces to be used in output json file', 4)
         .action(run);
 
 };

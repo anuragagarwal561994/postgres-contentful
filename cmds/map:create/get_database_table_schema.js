@@ -1,8 +1,8 @@
 'use strict';
 
+const co = require('co');
 const inquirer = require('inquirer');
 const PostgresSchema = require('pg-json-schema-export');
-const async = require('../../helpers').async;
 
 function getTableInformation(schema) {
     const tables = schema.tables;
@@ -36,9 +36,9 @@ function getDatabaseInformation() {
     return inquirer.prompt(question);
 }
 
-module.exports = async(function *() {
+module.exports = co.wrap(function *exec() {
     const schema = yield getDatabaseInformation().then(getDatabaseSchema);
-    const { tableName } = yield getTableInformation(schema);
+    const {tableName} = yield getTableInformation(schema);
 
     return schema.tables[tableName];
 });
