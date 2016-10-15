@@ -23,6 +23,7 @@
   "dependencies": {
     "autocmdr": "~0.0.7",
     "commander": "~2.0.0",
+    "contentful": "^3.6.4",
     "inquirer": "^1.2.2",
     "pg-json-schema-export": "^0.13.7"
   },
