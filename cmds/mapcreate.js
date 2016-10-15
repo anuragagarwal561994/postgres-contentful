@@ -3,15 +3,20 @@
 const inquirer = require('inquirer');
 const PostgresSchema = require('pg-json-schema-export');
 
-function getTableName(schema) {
+function getTableSchema(tables) {
+    return ({table_name}) => tables[table_name];
+}
+
+function getTableInformation(schema) {
+    const tables = schema.tables;
     const question = {
         name: 'table_name',
         type: 'list',
         message: 'Choose a table name:',
-        choices: Object.keys(schema.tables),
+        choices: Object.keys(tables),
     };
 
-    return inquirer.prompt(question);
+    return inquirer.prompt(question).then(getTableSchema(tables));
 }
 
 function getDatabaseSchema({postgres}) {
@@ -31,7 +36,7 @@ function getDatabaseInformation() {
         }
     };
 
-    return inquirer.prompt(question);
+    return inquirer.prompt(question).then(getDatabaseSchema);
 }
 
 module.exports = (program) => {
@@ -39,8 +44,7 @@ module.exports = (program) => {
 
     function run() {
         getDatabaseInformation()
-            .then(getDatabaseSchema)
-            .then(getTableName)
+            .then(getTableInformation)
             .then(console.log)
             .then(exit)
             .catch(exit);
