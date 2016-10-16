@@ -5,7 +5,7 @@ const inquirer = require('inquirer');
 const rp = require('request-promise');
 const endpoints = require('../../contentful_endpoints');
 
-function getContentfulInformation(accessToken) {
+module.exports = co.wrap(function* exec(accessToken) {
     const CONTENTFUL_ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN;
     const CONTENTFUL_SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
     const requestOptions = {json: true};
@@ -58,9 +58,5 @@ function getContentfulInformation(accessToken) {
         },
     ];
 
-    return inquirer.prompt(questions);
-}
-
-module.exports = co.wrap(function* exec(accessToken) {
-    return (yield getContentfulInformation(accessToken));
+    return yield inquirer.prompt(questions);
 });

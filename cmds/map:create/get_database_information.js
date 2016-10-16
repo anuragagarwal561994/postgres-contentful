@@ -8,7 +8,7 @@ function getDatabaseSchema(connectionString, schema = 'public') {
     return PostgresSchema.toJSON(connectionString, schema);
 }
 
-function getPostgresInformation(connectionURI, schema) {
+module.exports = co.wrap(function *exec(connectionURI, schemaName) {
     const question = [
         {
             name: 'postgres',
@@ -29,7 +29,7 @@ function getPostgresInformation(connectionURI, schema) {
             message: 'Choose a table name:',
             choices: co.wrap(function *getChoices({postgres}) {
                 const connection = postgres || process.env.PG_CONNECTION_URI;
-                const schema = yield getDatabaseSchema(connection, schema);
+                const schema = yield getDatabaseSchema(connection, schemaName);
                 const tables = schema.tables;
 
                 return Object.keys(tables).map(name => ({
@@ -40,9 +40,5 @@ function getPostgresInformation(connectionURI, schema) {
         },
     ];
 
-    return inquirer.prompt(question);
-}
-
-module.exports = co.wrap(function *exec(connectionURI, schema) {
-    return (yield getPostgresInformation(connectionURI, schema));
+    return yield inquirer.prompt(question);
 });
