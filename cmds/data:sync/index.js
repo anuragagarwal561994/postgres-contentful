@@ -2,7 +2,7 @@
 
 const co = require('co');
 const jsonfile = require('jsonfile');
-const values = require('lodash/values');
+const {uniq, values} = require('lodash');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
 
@@ -31,7 +31,7 @@ module.exports = (program) => {
             const pgData = yield fetchData(
                 data.pgConnectionURI,
                 data.tableSchema.table_name,
-                values(data.mappings)
+                uniq(values(data.mappings))
             );
 
             console.log(pgData);
