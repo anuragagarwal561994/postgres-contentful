@@ -23,10 +23,13 @@ module.exports = (program) => {
         process.exit(1);
     }
 
-    const run = co.wrap(function *exec(filename) {
+    const run = co.wrap(function *exec(filename, {validate}) {
         try {
-            const data = jsonfile.readFileSync(filename);
-            checkMappingData(data);
+            const data = jsonfile.readFileSync(filename, program);
+
+            if (validate) {
+                checkMappingData(data);
+            }
 
             const pgData = yield fetchData(
                 data.pgConnectionURI,
@@ -47,6 +50,7 @@ module.exports = (program) => {
         .version('0.0.0')
         .description('Synchronizes data from postgres -> contentful')
         .option('--where <where_clause>', 'query data to sync')
+        .option('--no-validate', 'to not validate the schema file')
         .action(run);
 
 };
