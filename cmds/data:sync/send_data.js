@@ -24,7 +24,10 @@ const sendRequests = co.wrap(function *exec(requests, limit = 10, time = 1000) {
     const result = [];
     while (requests.length) {
         const currentResult = yield requests.splice(0, Math.min(limit, requests.length))
-            .map(request => request.then(() => bar.tick()));
+            .map(request => request.then((response) => {
+                bar.tick();
+                return response;
+            }));
         Array.prototype.push.apply(result, currentResult);
         if (time > 0 && requests.length) {
             yield wait(time);
