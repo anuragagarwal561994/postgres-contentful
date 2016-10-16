@@ -6,8 +6,8 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
 const {set, get, chain, omit} = require('lodash');
-const getDatabaseInformation = require('./get_database_table_schema');
-const getContentTypeSchema = require('./get_contentful_content_type_schema');
+const getDatabaseInformation = require('./get_database_information');
+const getContentfulInformation = require('./get_contentful_information');
 
 function overwriteFile(filename) {
     const question = {
@@ -52,8 +52,10 @@ module.exports = (program) => {
                 }
             }
 
-            const {postgres, rawTableSchema} = yield getDatabaseInformation(databaseConnectionURI);
-            const contentTypeSchema = yield getContentTypeSchema(contentfulAccessToken);
+            const databaseInformation = yield getDatabaseInformation(databaseConnectionURI);
+            const contentfulInformation = yield getContentfulInformation(contentfulAccessToken);
+            const {postgres, rawTableSchema} = databaseInformation;
+            const {accessToken, contentTypeSchema} = contentfulInformation;
             const tableSchema = set(rawTableSchema, 'columns',
                 chain(get(rawTableSchema, 'columns'))
                     .values()
@@ -70,6 +72,7 @@ module.exports = (program) => {
 
             const JSONcontent = {
                 pgConnectionURI,
+                accessToken,
                 tableSchema,
                 contentTypeSchema,
                 mappings,

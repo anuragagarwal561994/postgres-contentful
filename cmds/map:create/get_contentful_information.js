@@ -62,5 +62,5 @@ function getContentfulInformation(accessToken) {
 }
 
 module.exports = co.wrap(function* exec(accessToken) {
-    return (yield getContentfulInformation(accessToken)).contentTypeSchema;
+    return (yield getContentfulInformation(accessToken));
 });

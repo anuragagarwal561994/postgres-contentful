@@ -29,6 +29,7 @@ const columnSchema = objectValidation({
 
 const schema = objectValidation({
     pgConnectionURI: stringValidation,
+    accessToken: Joi.string().token().concat(stringValidation),
     tableSchema: objectValidation({
         table_schema: stringValidation,
         table_name: stringValidation,
@@ -36,6 +37,17 @@ const schema = objectValidation({
         columns: Joi.array().items(columnSchema),
     }),
     contentTypeSchema: objectValidation({
+        sys: objectValidation({
+            space: objectValidation({
+                sys: objectValidation({
+                    id: stringValidation,
+                    type: stringValidation.equal('Link'),
+                    linkType: stringValidation.equal('Space'),
+                }),
+            }),
+            id: stringValidation,
+            type: stringValidation.equal('ContentType'),
+        }),
         fields: Joi.array().items(contentFieldSchema),
     }),
     mappings: Joi.object().min(1).pattern(/.*/, stringValidation),
