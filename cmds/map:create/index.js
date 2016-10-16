@@ -2,25 +2,13 @@
 
 const co = require('co');
 const chalk = require('chalk');
-const fs = require('fs');
-const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
 const {set, get, chain, omit} = require('lodash');
 const exitModule = require('../../exit');
+const askOverwrite = require('../../ask_overwrite');
 const getDatabaseInformation = require('./get_database_information');
 const getContentfulInformation = require('./get_contentful_information');
 
-function overwriteFile(filename) {
-    const question = {
-        name: 'overwrite',
-        type: 'confirm',
-        message: `Overwrite ${filename}:`,
-        default: false,
-        when: fs.statSync(filename).isFile(),
-    };
-
-    return inquirer.prompt(question);
-}
 
 module.exports = (program) => {
     const exit = exitModule(program, () => {
@@ -33,7 +21,7 @@ module.exports = (program) => {
             const databaseConnectionURI = program.config.get('pg_connection_uri');
 
             if (!force) {
-                const {overwrite} = yield overwriteFile(output);
+                const {overwrite} = yield askOverwrite(output);
 
                 if (overwrite === false) {
                     exit(new Error('Output file already exists'));
