@@ -39,7 +39,7 @@ module.exports = (program) => {
         process.exit(1);
     }
 
-    const run = co.wrap(function *exec({output, spaces, force}) {
+    const run = co.wrap(function *exec({output, spaces, force, schema}) {
         try {
             const contentfulAccessToken = program.config.get('access_token');
             const databaseConnectionURI = program.config.get('pg_connection_uri');
@@ -52,7 +52,7 @@ module.exports = (program) => {
                 }
             }
 
-            const databaseInformation = yield getDatabaseInformation(databaseConnectionURI);
+            const databaseInformation = yield getDatabaseInformation(databaseConnectionURI, schema);
             const contentfulInformation = yield getContentfulInformation(contentfulAccessToken);
             const {postgres, rawTableSchema} = databaseInformation;
             const {accessToken, contentTypeSchema} = contentfulInformation;
@@ -106,6 +106,7 @@ module.exports = (program) => {
             defaults.spaces
         )
         .option('-f, --force', 'force overwrite of output file')
+        .option('--schema <schema>', 'to choose schema other than public')
         .action(run);
 
 };

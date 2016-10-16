@@ -4,11 +4,11 @@ const co = require('co');
 const inquirer = require('inquirer');
 const PostgresSchema = require('pg-json-schema-export');
 
-function getDatabaseSchema(connectionString) {
-    return PostgresSchema.toJSON(connectionString, 'public');
+function getDatabaseSchema(connectionString, schema = 'public') {
+    return PostgresSchema.toJSON(connectionString, schema);
 }
 
-function getPostgresInformation(connectionURI) {
+function getPostgresInformation(connectionURI, schema) {
     const question = [
         {
             name: 'postgres',
@@ -29,7 +29,7 @@ function getPostgresInformation(connectionURI) {
             message: 'Choose a table name:',
             choices: co.wrap(function *getChoices({postgres}) {
                 const connection = postgres || process.env.PG_CONNECTION_URI;
-                const schema = yield getDatabaseSchema(connection);
+                const schema = yield getDatabaseSchema(connection, schema);
                 const tables = schema.tables;
 
                 return Object.keys(tables).map(name => ({
@@ -43,6 +43,6 @@ function getPostgresInformation(connectionURI) {
     return inquirer.prompt(question);
 }
 
-module.exports = co.wrap(function *exec(connectionURI) {
-    return (yield getPostgresInformation(connectionURI));
+module.exports = co.wrap(function *exec(connectionURI, schema) {
+    return (yield getPostgresInformation(connectionURI, schema));
 });
