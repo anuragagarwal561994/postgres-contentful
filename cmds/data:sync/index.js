@@ -3,26 +3,13 @@
 const co = require('co');
 const jsonfile = require('jsonfile');
 const {uniq, values} = require('lodash');
+const exitModule = require('../../exit');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
 const sendData = require('./send_data');
 
 module.exports = (program) => {
-    const logger = program.log;
-
-    function exit(err) {
-        if (!err) {
-            process.exit(0);
-        }
-
-        let errMessage = err.message;
-        if (err.code) {
-            errMessage = `${err.code}: ${errMessage}`;
-        }
-
-        logger.error(errMessage);
-        process.exit(1);
-    }
+    const exit = exitModule(program);
 
     const run = co.wrap(function *exec(filename, {validate}) {
         try {

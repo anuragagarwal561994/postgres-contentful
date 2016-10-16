@@ -6,6 +6,7 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
 const {set, get, chain, omit} = require('lodash');
+const exitModule = require('../../exit');
 const getDatabaseInformation = require('./get_database_information');
 const getContentfulInformation = require('./get_contentful_information');
 
@@ -22,22 +23,9 @@ function overwriteFile(filename) {
 }
 
 module.exports = (program) => {
-    const logger = program.log;
-
-    function exit(err) {
-        if (!err) {
-            logger.info('Mappings file created successfully');
-            process.exit(0);
-        }
-
-        let errMessage = err.message;
-        if (err.code) {
-            errMessage = `${err.code}: ${errMessage}`;
-        }
-
-        logger.error(errMessage);
-        process.exit(1);
-    }
+    const exit = exitModule(program, () => {
+        program.log.info('Mappings file created successfully');
+    });
 
     const run = co.wrap(function *exec({output, spaces, force, schema}) {
         try {
