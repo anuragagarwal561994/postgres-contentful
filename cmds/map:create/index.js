@@ -38,15 +38,17 @@ module.exports = (program) => {
         process.exit(1);
     }
 
-    const run = co.wrap(function *exec({output, spaces}) {
+    const run = co.wrap(function *exec({output, spaces, force}) {
         try {
             const contentfulAccessToken = program.config.get('access_token');
             const databaseConnectionURI = program.config.get('pg_connection_uri');
 
-            const {overwrite} = yield overwriteFile(output);
+            if (!force) {
+                const {overwrite} = yield overwriteFile(output);
 
-            if (overwrite === false) {
-                exit(new Error('Output file already exists'));
+                if (overwrite === false) {
+                    exit(new Error('Output file already exists'));
+                }
             }
 
             const { postgres, tableSchema } = yield getDatabaseInformation(databaseConnectionURI);
@@ -93,6 +95,7 @@ module.exports = (program) => {
             parseInt,
             defaults.spaces
         )
+        .option('-f, --force', 'force overwrite of output file')
         .action(run);
 
 };
