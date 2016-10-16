@@ -4,6 +4,7 @@ function checkKeys(mapping) {
     const keysToCheck = [
         'pgConnectionURI',
         'tableSchema',
+        'tableSchema.table_schema',
         'tableSchema.columns',
         'contentTypeSchema',
         'contentTypeSchema.fields',
@@ -26,20 +27,23 @@ function checkKeys(mapping) {
 }
 
 function checkKeyTypes(mapping) {
-    let key = 'tableSchema.columns';
-    if (!_.isPlainObject(_.result(mapping, key))) {
-        throw new Error(`${key} should be plain object`);
-    }
+    const types = {
+        'object': _.isPlainObject,
+        'array': _.isArray,
+    };
 
-    key = 'contentTypeSchema.fields';
-    if (!_.isArray(_.result(mapping, key))) {
-        throw new Error(`${key} should be an array`);
-    }
+    const toCheck = {
+        'tableSchema.columns': 'object',
+        'contentTypeSchema.fields': 'array',
+        'mappings': 'object',
+    };
 
-    key = 'mappings';
-    if (!_.isPlainObject(_.result(mapping, key))) {
-        throw new Error(`${key} should be plain object`);
-    }
+    _.keys(toCheck).forEach((key) => {
+        const value = _.result(mapping, key);
+        if (!types[toCheck[key]](value)) {
+            throw new Error(`${key} should be ${toCheck[key]}`);
+        }
+    });
 }
 
 function checkMappingValues(mapping) {
