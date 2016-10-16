@@ -30,9 +30,11 @@ function checkKeyTypes(mapping) {
     const types = {
         'object': _.isPlainObject,
         'array': _.isArray,
+        'string': _.isString,
     };
 
     const toCheck = {
+        'pgConnectionURI': 'string',
         'tableSchema.columns': 'object',
         'contentTypeSchema.fields': 'array',
         'mappings': 'object',
