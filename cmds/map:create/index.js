@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
+const {set, get, chain, omit} = require('lodash');
 const getDatabaseInformation = require('./get_database_table_schema');
 const getContentTypeSchema = require('./get_contentful_content_type_schema');
 
@@ -51,8 +52,14 @@ module.exports = (program) => {
                 }
             }
 
-            const { postgres, tableSchema } = yield getDatabaseInformation(databaseConnectionURI);
+            const {postgres, rawTableSchema} = yield getDatabaseInformation(databaseConnectionURI);
             const contentTypeSchema = yield getContentTypeSchema(contentfulAccessToken);
+            const tableSchema = set(rawTableSchema, 'columns',
+                chain(get(rawTableSchema, 'columns'))
+                    .values()
+                    .map(o => omit(o, ['table_schema', 'table_name']))
+                    .value()
+            );
 
             const pgConnectionURI = postgres || process.env.PG_CONNECTION_URI;
             const contentTypeFields = contentTypeSchema.fields.map(o => o.id);

@@ -24,7 +24,7 @@ function getPostgresInformation(connectionURI) {
             when: !process.env.PG_CONNECTION_URI,
         },
         {
-            name: 'tableSchema',
+            name: 'rawTableSchema',
             type: 'list',
             message: 'Choose a table name:',
             choices: co.wrap(function *getChoices({postgres}) {
