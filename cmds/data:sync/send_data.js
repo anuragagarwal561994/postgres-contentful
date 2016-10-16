@@ -1,6 +1,7 @@
 const co = require('co');
 const wait = require('co-wait');
 const rp = require('request-promise');
+const ProgressBar = require('progress');
 const {get, invert, mapKeys, mapValues} = require('lodash');
 const endpoints = require('../../contentful_endpoints');
 
@@ -15,9 +16,17 @@ function prepareData(data, mapping) {
 }
 
 const sendRequests = co.wrap(function *exec(requests, limit = 10, time = 1000) {
+    const bar = new ProgressBar('syncing [:bar] :percent :etas', {
+        complete: '=',
+        incomplete: ' ',
+        width: 20,
+        total: requests.length
+    });
+
     const result = [];
     while (requests.length) {
-        const currentResult = yield requests.splice(0, Math.min(limit, requests.length));
+        const currentResult = yield requests.splice(0, Math.min(limit, requests.length))
+            .map(request => request.then(() => bar.tick()));
         Array.prototype.push.apply(result, currentResult);
         if (time > 0 && requests.length) {
             yield wait(time);
