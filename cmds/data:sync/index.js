@@ -5,6 +5,7 @@ const jsonfile = require('jsonfile');
 const {uniq, values} = require('lodash');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
+const sendData = require('./send_data');
 
 module.exports = (program) => {
     const logger = program.log;
@@ -37,7 +38,7 @@ module.exports = (program) => {
                 uniq(values(data.mappings))
             );
 
-            console.log(pgData);
+            yield sendData(data, pgData);
 
             exit();
         } catch (err) {
