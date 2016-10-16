@@ -35,9 +35,24 @@ module.exports = co.wrap(function* exec(accessToken) {
                 const response = yield rp.get(requestOptions);
 
                 const mapChoices = (o) => ({name: o.name, value: o.sys.id});
-                return response.items.map(mapChoices);
+                return response.items.map(mapChoices).concat({name: 'Other', value: true});
             }),
             when: !CONTENTFUL_SPACE_ID,
+        },
+        {
+            name: 'spaceId',
+            type: 'input',
+            message: 'Enter a space id:',
+            validate(value) {
+                if (value.length) {
+                    return true;
+                }
+
+                return 'Please enter a space id';
+            },
+            when({spaceId}) {
+                return spaceId === true;
+            },
         },
         {
             name: 'contentTypeSchema',
