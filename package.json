@@ -29,7 +29,8 @@
     "inquirer": "^1.2.2",
     "jsonfile": "^2.4.0",
     "lodash": "^4.16.4",
-    "pg-json-schema-export": "^0.13.7"
+    "pg-json-schema-export": "^0.13.7",
+    "pg-promise": "^5.3.4"
   },
   "devDependencies": {}
 }

@@ -2,14 +2,15 @@
 
 const co = require('co');
 const jsonfile = require('jsonfile');
+const values = require('lodash/values');
 const checkMappingData = require('./check_mapping_data');
+const fetchData = require('./fetch_data');
 
 module.exports = (program) => {
     const logger = program.log;
 
     function exit(err) {
         if (!err) {
-            logger.info('Mappings file created successfully');
             process.exit(0);
         }
 
@@ -26,6 +27,16 @@ module.exports = (program) => {
         try {
             const data = jsonfile.readFileSync(filename);
             checkMappingData(data);
+
+            const pgData = yield fetchData(
+                data.pgConnectionURI,
+                data.tableSchema.table_name,
+                values(data.mappings)
+            );
+
+            console.log(pgData);
+
+            exit();
         } catch (err) {
             exit(err);
         }
@@ -35,6 +46,7 @@ module.exports = (program) => {
         .command('data:sync <file>')
         .version('0.0.0')
         .description('Synchronizes data from postgres -> contentful')
+        .option('--where <where_clause>', 'query data to sync')
         .action(run);
 
 };
