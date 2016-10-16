@@ -33,10 +33,7 @@ module.exports = (program) => {
             const {postgres, rawTableSchema} = databaseInformation;
             const {accessToken, contentTypeSchema} = contentfulInformation;
             const tableSchema = set(rawTableSchema, 'columns',
-                chain(get(rawTableSchema, 'columns'))
-                    .values()
-                    .map(o => omit(o, ['table_schema', 'table_name']))
-                    .value()
+                chain(get(rawTableSchema, 'columns')).values().value()
             );
 
             const pgConnectionURI = postgres || process.env.PG_CONNECTION_URI;

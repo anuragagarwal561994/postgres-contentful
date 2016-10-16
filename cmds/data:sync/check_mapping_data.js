@@ -20,6 +20,8 @@ const contentFieldSchema = objectValidation({
 });
 
 const columnSchema = objectValidation({
+    table_schema: stringValidation,
+    table_name: stringValidation,
     column_name: stringValidation,
     is_nullable: Joi.boolean(),
     data_type: stringValidation,
