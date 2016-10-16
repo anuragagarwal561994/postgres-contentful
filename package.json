@@ -28,6 +28,7 @@
     "contentful": "^3.6.4",
     "inquirer": "^1.2.2",
     "jsonfile": "^2.4.0",
+    "lodash": "^4.16.4",
     "pg-json-schema-export": "^0.13.7"
   },
   "devDependencies": {}
