@@ -5,8 +5,6 @@ const ProgressBar = require('progress');
 const {get, invert, mapKeys, mapValues} = require('lodash');
 const endpoints = require('../../contentful_endpoints');
 
-const exchangeKeyValuePairs = (object) => fromPairs(toPairs(object).map(pair => pair.reverse()));
-
 function prepareData(data, mapping) {
     const reverseMapping = invert(mapping);
     const convertToContentTypeFields = row => mapKeys(row, (value, key) => reverseMapping[key]);
