@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 function checkKeys(mapping) {
     const keysToCheck = [
+        'pgConnectionURI',
         'tableSchema',
         'tableSchema.columns',
         'contentTypeSchema',

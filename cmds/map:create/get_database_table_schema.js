@@ -44,5 +44,5 @@ function getPostgresInformation(connectionURI) {
 }
 
 module.exports = co.wrap(function *exec(connectionURI) {
-    return (yield getPostgresInformation(connectionURI)).tableSchema;
+    return (yield getPostgresInformation(connectionURI));
 });

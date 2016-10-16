@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
-const getTableSchema = require('./get_database_table_schema');
+const getDatabaseInformation = require('./get_database_table_schema');
 const getContentTypeSchema = require('./get_contentful_content_type_schema');
 
 function overwriteFile(filename) {
@@ -49,9 +49,10 @@ module.exports = (program) => {
                 exit(new Error('Output file already exists'));
             }
 
-            const tableSchema = yield getTableSchema(databaseConnectionURI);
+            const { postgres, tableSchema } = yield getDatabaseInformation(databaseConnectionURI);
             const contentTypeSchema = yield getContentTypeSchema(contentfulAccessToken);
 
+            const pgConnectionURI = postgres || process.env.PG_CONNECTION_URI;
             const contentTypeFields = contentTypeSchema.fields.map(o => o.id);
             const mappings = contentTypeFields.reduce((hash, value) => {
                 hash[value] = null;
@@ -59,6 +60,7 @@ module.exports = (program) => {
             }, {});
 
             const JSONcontent = {
+                pgConnectionURI,
                 tableSchema,
                 contentTypeSchema,
                 mappings,
