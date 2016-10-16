@@ -59,6 +59,15 @@ function getFirstDifferent(values, testWith) {
     return chain(values).difference(testWith).first().value();
 }
 
+function checkRequiredColumns(columns, mapping) {
+    const columnsPresent = map(mapping.tableSchema.columns, 'column_name');
+    const absentRequiredColumn = getFirstDifferent(columns, columnsPresent);
+
+    if (absentRequiredColumn) {
+        throw new Error(`${absentRequiredColumn} column missing in database`);
+    }
+}
+
 function checkMappingValues(mapping) {
     const columns = map(mapping.tableSchema.columns, 'column_name');
     const invalidColumn = getFirstDifferent(values(mapping.mappings), columns);
@@ -80,6 +89,7 @@ function checkMappingKeys(mapping) {
 module.exports = (mapping) => {
     const result = schema.validate(mapping);
     if (result.error) throw result.error;
+    checkRequiredColumns(['externalid', 'contentfulversion'], mapping);
     checkMappingValues(mapping);
     checkMappingKeys(mapping);
 };
