@@ -1,79 +1,62 @@
-const _ = require('lodash');
+const {chain, isPlainObject, map, reject, values} = require('lodash');
+const Joi = require('joi');
 
-function checkKeys(mapping) {
-    const keysToCheck = [
-        'pgConnectionURI',
-        'tableSchema',
-        'tableSchema.table_schema',
-        'tableSchema.columns',
-        'contentTypeSchema',
-        'contentTypeSchema.fields',
-        'mappings',
-    ];
+const stringValidation = Joi.string().trim().empty();
+const isJoiObject = item => isPlainObject(item) && item.isJoi === true && item._type === 'object';
+const objectValidation = (o) => {
+    const requiredKeys = reject(Object.keys(o), isJoiObject).concat('');
+    return Joi.object(o).unknown().requiredKeys(requiredKeys);
+};
 
-    const isMissing = (key) => !_.has(mapping, key);
-    const missingElement = _.find(keysToCheck, isMissing);
+const contentFieldSchema = objectValidation({
+    id: stringValidation,
+    name: stringValidation,
+    type: stringValidation,
+    localized: Joi.boolean(),
+    required: Joi.boolean(),
+    disabled: Joi.boolean(),
+    omitted: Joi.boolean(),
+    validations: Joi.array(),
+});
 
-    if (missingElement) {
-        throw new Error(`${missingElement} missing`);
-    }
+const columnSchema = objectValidation({
+    column_name: stringValidation,
+    is_nullable: Joi.boolean(),
+    data_type: stringValidation,
+    col_description: stringValidation.allow(null),
+    column_default: Joi.any().allow(null),
+});
 
-    const isEmpty = (key) => _.isEmpty(_.result(mapping, key));
-    const emptyElement = _.find(keysToCheck, isEmpty);
+const schema = objectValidation({
+    pgConnectionURI: stringValidation,
+    tableSchema: objectValidation({
+        table_schema: stringValidation,
+        table_name: stringValidation,
+        obj_description: stringValidation.allow(null),
+        columns: Joi.array().items(columnSchema),
+    }),
+    contentTypeSchema: objectValidation({
+        fields: Joi.array().items(contentFieldSchema),
+    }),
+    mappings: Joi.object().min(1).pattern(/.*/, stringValidation),
+});
 
-    if (emptyElement) {
-        throw new Error(`${emptyElement} is empty`);
-    }
-}
-
-function checkKeyTypes(mapping) {
-    const types = {
-        'object': _.isPlainObject,
-        'array': _.isArray,
-        'string': _.isString,
-    };
-
-    const toCheck = {
-        'pgConnectionURI': 'string',
-        'tableSchema.columns': 'object',
-        'contentTypeSchema.fields': 'array',
-        'mappings': 'object',
-    };
-
-    _.keys(toCheck).forEach((key) => {
-        const value = _.result(mapping, key);
-        if (!types[toCheck[key]](value)) {
-            throw new Error(`${key} should be ${toCheck[key]}`);
-        }
-    });
+function getFirstDifferent(values, testWith) {
+    return chain(values).difference(testWith).first().value();
 }
 
 function checkMappingValues(mapping) {
-    let isInvalidColumn = (value) => !_.isString(value);
-    let invalidColumn = _.findKey(mapping.mappings, isInvalidColumn);
+    const columns = map(mapping.tableSchema.columns, 'column_name');
+    const invalidColumn = getFirstDifferent(values(mapping.mappings), columns);
 
     if (invalidColumn) {
-        const value = mapping.mappings[invalidColumn];
-        throw new Error(`${invalidColumn} has a non string value (${value}) in mappings`);
-    }
-
-    isInvalidColumn = (value) => !_.has(mapping.tableSchema.columns, value);
-    invalidColumn = _.findKey(mapping.mappings, isInvalidColumn);
-
-    if (invalidColumn) {
-        const value = mapping.mappings[invalidColumn];
-        throw new Error(`${invalidColumn} has a value (${value}) with non existent column in db`);
+        throw new Error(`${invalidColumn} column does not exists in db`);
     }
 }
 
 function checkMappingKeys(mapping) {
-    const contentFields = _.map(mapping.contentTypeSchema.fields, 'id');
-    const invalidContentField = _
-        .chain(mapping.mappings)
-        .keys()
-        .difference(contentFields)
-        .first()
-        .value();
+    const contentFields = map(mapping.contentTypeSchema.fields, 'id');
+    const invalidContentField = getFirstDifferent(mapping.mappings, contentFields);
 
     if (invalidContentField) {
         throw new Error(`${invalidContentField} content field does not exists`);
@@ -81,8 +64,8 @@ function checkMappingKeys(mapping) {
 }
 
 module.exports = (mapping) => {
-    checkKeys(mapping);
-    checkKeyTypes(mapping);
+    const result = schema.validate(mapping);
+    if (result.error) throw result.error;
     checkMappingValues(mapping);
     checkMappingKeys(mapping);
 };
