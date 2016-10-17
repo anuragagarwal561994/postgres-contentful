@@ -1,8 +1,8 @@
-const {chain, isPlainObject, map, reject, values} = require('lodash');
+const { chain, get, isPlainObject, map, reject, values } = require('lodash');
 const Joi = require('joi');
 
 const stringValidation = Joi.string().trim().empty();
-const isJoiObject = item => isPlainObject(item) && item.isJoi === true && item._type === 'object';
+const isJoiObject = item => isPlainObject(item) && item.isJoi === true && get(item, '_type') === 'object';
 const objectValidation = (o) => {
   const requiredKeys = [...reject(Object.keys(o), isJoiObject), ''];
   return Joi.object(o).unknown().requiredKeys(requiredKeys);
@@ -55,8 +55,8 @@ const schema = objectValidation({
   mappings: Joi.object().min(1).pattern(/.*/, stringValidation),
 });
 
-function getFirstDifferent(values, testWith) {
-  return chain(values).difference(testWith).first().value();
+function getFirstDifferent(toTest, testWith) {
+  return chain(toTest).difference(testWith).first().value();
 }
 
 function checkRequiredColumns(columns, mapping) {

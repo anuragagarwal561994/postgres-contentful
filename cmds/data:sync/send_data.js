@@ -2,7 +2,7 @@ const co = require('co');
 const wait = require('co-wait');
 const rp = require('request-promise');
 const ProgressBar = require('progress');
-const {get, invert, mapKeys, mapValues, pick} = require('lodash');
+const { get, invert, mapKeys, mapValues, pick } = require('lodash');
 const endpoints = require('../../contentful_endpoints');
 
 function prepareData(data, mapping) {
@@ -12,17 +12,17 @@ function prepareData(data, mapping) {
     pick(row, columns),
     (value, key) => reverseMapping[key]
   );
-  const addLocaleKey = value => ({'en-US': value});
+  const addLocaleKey = value => ({ 'en-US': value });
   return data.map(convertToContentTypeFields)
     .map(column => mapValues(column, addLocaleKey));
 }
 
-const sendRequests = co.wrap(function *exec(requests, limit = 10, time = 1000) {
+const sendRequests = co.wrap(function* exec(requests, limit = 10, time = 1000) {
   const bar = new ProgressBar('syncing [:bar] :percent :etas', {
     complete: '=',
     incomplete: ' ',
     width: 20,
-    total: requests.length
+    total: requests.length,
   });
 
   let result = [];
@@ -40,12 +40,12 @@ const sendRequests = co.wrap(function *exec(requests, limit = 10, time = 1000) {
   return result;
 });
 
-module.exports = co.wrap(function *exec(mapping, data, connectingKey) {
+module.exports = co.wrap(function* exec(mapping, data, connectingKey) {
   const requestOptions = {
-    auth: {bearer: mapping.accessToken},
+    auth: { bearer: mapping.accessToken },
     json: true,
     headers: {},
-    body: {fields: {}},
+    body: { fields: {} },
   };
 
   const spaceId = get(mapping, 'contentTypeSchema.sys.space.sys.id');

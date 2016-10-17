@@ -1,9 +1,7 @@
-'use strict';
-
 const co = require('co');
 const chalk = require('chalk');
 const jsonfile = require('jsonfile');
-const {set, get, chain, omit} = require('lodash');
+const { set, get, chain } = require('lodash');
 const exitModule = require('../../exit');
 const askOverwrite = require('../../ask_overwrite');
 const getDatabaseInformation = require('./get_database_information');
@@ -15,13 +13,13 @@ module.exports = (program) => {
     program.log.info('Mappings file created successfully');
   });
 
-  const run = co.wrap(function *exec({output, spaces, force, schema}) {
+  const run = co.wrap(function* exec({ output, spaces, force, schema }) {
     try {
       const contentfulAccessToken = program.config.get('access_token');
       const databaseConnectionURI = program.config.get('pg_connection_uri');
 
       if (!force) {
-        const {overwrite} = yield askOverwrite(output);
+        const { overwrite } = yield askOverwrite(output);
 
         if (overwrite === false) {
           exit(new Error('Output file already exists'));
@@ -30,8 +28,8 @@ module.exports = (program) => {
 
       const databaseInformation = yield getDatabaseInformation(databaseConnectionURI, schema);
       const contentfulInformation = yield getContentfulInformation(contentfulAccessToken);
-      const {postgres, rawTableSchema} = databaseInformation;
-      const {accessToken, contentTypeSchema} = contentfulInformation;
+      const { postgres, rawTableSchema } = databaseInformation;
+      const { accessToken, contentTypeSchema } = contentfulInformation;
       const tableSchema = set(rawTableSchema, 'columns',
         chain(get(rawTableSchema, 'columns')).values().value()
       );
@@ -39,7 +37,7 @@ module.exports = (program) => {
       const pgConnectionURI = postgres || process.env.PG_CONNECTION_URI;
       const contentTypeFields = contentTypeSchema.fields.map(o => o.id);
       const mappings = contentTypeFields.reduce((hash, value) => {
-        hash[value] = null;
+        set(hash, value, null);
         return hash;
       }, {});
 
@@ -51,7 +49,7 @@ module.exports = (program) => {
         mappings,
       };
 
-      jsonfile.writeFile(output, JSONcontent, {spaces}, exit);
+      jsonfile.writeFile(output, JSONcontent, { spaces }, exit);
     } catch (err) {
       exit(err);
     }
@@ -61,7 +59,7 @@ module.exports = (program) => {
     output: 'mappings.json',
     spaces: 4,
   };
-  const defaultString = (value) => chalk.cyan(`[default: ${value}]`);
+  const defaultString = value => chalk.cyan(`[default: ${value}]`);
 
   program
     .command('map:create')
@@ -81,5 +79,4 @@ module.exports = (program) => {
     .option('-f, --force', 'force overwrite of output file')
     .option('--schema <schema>', 'to choose schema other than public')
     .action(run);
-
 };

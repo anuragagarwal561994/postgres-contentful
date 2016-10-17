@@ -1,7 +1,7 @@
 const co = require('co');
 const pgp = require('pg-promise')();
 
-module.exports = co.wrap(function *exec(connection, tableName, columns, where = '1=1') {
+module.exports = co.wrap(function* exec(connection, tableName, columns, where = '1=1') {
   const db = pgp(connection);
 
   yield db.connect();

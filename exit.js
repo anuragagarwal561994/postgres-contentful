@@ -18,5 +18,5 @@ module.exports = (program, onSuccess) => {
 
     logger.error(errMessage);
     process.exit(1);
-  }
+  };
 };

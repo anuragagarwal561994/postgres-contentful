@@ -1,15 +1,13 @@
-'use strict';
-
 const co = require('co');
 const inquirer = require('inquirer');
 const PostgresSchema = require('pg-json-schema-export');
-const {has, mapValues, set} = require('lodash');
+const { has, mapValues, set } = require('lodash');
 
 function getDatabaseSchema(connectionString, schema = 'public') {
   return PostgresSchema.toJSON(connectionString, schema);
 }
 
-module.exports = co.wrap(function *exec(connectionURI, schemaName) {
+module.exports = co.wrap(function* exec(connectionURI, schemaName) {
   const question = [
     {
       name: 'postgres',
@@ -28,7 +26,7 @@ module.exports = co.wrap(function *exec(connectionURI, schemaName) {
       name: 'rawTableSchema',
       type: 'list',
       message: 'Choose a table name:',
-      choices: co.wrap(function *getChoices({postgres}) {
+      choices: co.wrap(function* getChoices({ postgres }) {
         const connection = postgres || process.env.PG_CONNECTION_URI;
         const schema = yield getDatabaseSchema(connection, schemaName);
 

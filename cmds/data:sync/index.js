@@ -1,8 +1,6 @@
-'use strict';
-
 const co = require('co');
 const jsonfile = require('jsonfile');
-const {uniq, values} = require('lodash');
+const { uniq, values } = require('lodash');
 const exitModule = require('../../exit');
 const askOverwrite = require('../../ask_overwrite');
 const checkMappingData = require('./check_mapping_data');
@@ -13,12 +11,12 @@ const updateDB = require('./update_db');
 module.exports = (program) => {
   const exit = exitModule(program);
 
-  const run = co.wrap(function *exec(filename, {validate, log, connectingKey, where}) {
+  const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
     try {
       const data = jsonfile.readFileSync(filename, program);
 
       if (log) {
-        const {overwrite} = yield askOverwrite(log);
+        const { overwrite } = yield askOverwrite(log);
 
         if (overwrite === false) {
           exit(new Error('Log file already exists'));
@@ -45,7 +43,7 @@ module.exports = (program) => {
       );
 
       if (log) {
-        jsonfile.writeFile(log, response, {spaces: 4}, exit);
+        jsonfile.writeFile(log, response, { spaces: 4 }, exit);
       } else {
         exit();
       }
@@ -64,5 +62,4 @@ module.exports = (program) => {
     .option('--connecting-key <connecting_key>', 'column to be used as connecting key', 'externalid')
     .option('--log <log_file>', 'file to log response to')
     .action(run);
-
 };
