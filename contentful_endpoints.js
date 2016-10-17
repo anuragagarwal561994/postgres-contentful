@@ -1,3 +1,7 @@
+/**
+ * List and helpers for API endpoints for Contentful
+ **/
+
 const BASE_URL = 'https://api.contentful.com';
 const SPACE_ENDPOINT = `${BASE_URL}/spaces`;
 const CONTENT_TYPES_ENDPOINT = spaceId => `${SPACE_ENDPOINT}/${spaceId}/content_types`;
