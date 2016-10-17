@@ -35,7 +35,7 @@ module.exports = co.wrap(function* exec(accessToken) {
                 const response = yield rp.get(requestOptions);
 
                 const mapChoices = (o) => ({name: o.name, value: o.sys.id});
-                return response.items.map(mapChoices).concat({name: 'Other', value: true});
+                return [...response.items.map(mapChoices), {name: 'Other', value: true}];
             }),
             when: !CONTENTFUL_SPACE_ID,
         },

@@ -4,7 +4,7 @@ const Joi = require('joi');
 const stringValidation = Joi.string().trim().empty();
 const isJoiObject = item => isPlainObject(item) && item.isJoi === true && item._type === 'object';
 const objectValidation = (o) => {
-    const requiredKeys = reject(Object.keys(o), isJoiObject).concat('');
+    const requiredKeys = [...reject(Object.keys(o), isJoiObject), ''];
     return Joi.object(o).unknown().requiredKeys(requiredKeys);
 };
 
