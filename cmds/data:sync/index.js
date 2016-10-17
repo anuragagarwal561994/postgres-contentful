@@ -46,7 +46,6 @@ module.exports = (program) => {
         exit();
       }
     } catch (err) {
-      console.log(err);
       exit(err);
     }
   });
