@@ -7,7 +7,7 @@ module.exports = (defaultToken) => {
     message: 'Enter your Contentful access_token:',
     default: defaultToken,
     validate(value) {
-      if (value.length) {
+      if (value.trim().length) {
         return true;
       }
       return 'Please enter your Contentful access_token';

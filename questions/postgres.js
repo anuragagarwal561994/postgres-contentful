@@ -7,7 +7,7 @@ module.exports = (connectionURI) => {
     message: 'Enter your postgreSQL connection string:',
     default: connectionURI,
     validate(connection) {
-      if (connection.length) {
+      if (connection.trim().length) {
         return true;
       }
       return 'Please enter your postgreSQL connection string';

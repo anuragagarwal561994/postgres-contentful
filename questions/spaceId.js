@@ -27,7 +27,7 @@ module.exports = (accessToken) => {
       type: 'input',
       message: 'Enter a space id:',
       validate(value) {
-        if (value.length) {
+        if (value.trim().length) {
           return true;
         }
 
