@@ -9,7 +9,9 @@ const sendData = require('./send_data');
 const updateDB = require('./update_db');
 
 module.exports = (program) => {
-  const exit = exitModule(program);
+  const exit = exitModule(program, () => {
+    program.log.info('Completed transfer');
+  });
 
   const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
     try {
