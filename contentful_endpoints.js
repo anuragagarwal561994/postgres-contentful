@@ -4,8 +4,8 @@ const CONTENT_TYPES_ENDPOINT = (spaceId) => `${SPACE_ENDPOINT}/${spaceId}/conten
 const ENTRIES_ENDPOINT = (spaceId) => `${SPACE_ENDPOINT}/${spaceId}/entries`;
 
 module.exports = {
-    BASE_URL,
-    SPACE_ENDPOINT,
-    CONTENT_TYPES_ENDPOINT,
-    ENTRIES_ENDPOINT,
+  BASE_URL,
+  SPACE_ENDPOINT,
+  CONTENT_TYPES_ENDPOINT,
+  ENTRIES_ENDPOINT,
 };

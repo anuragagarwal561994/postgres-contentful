@@ -12,10 +12,10 @@ require('autocmdr/lib/help')(program);
 
 
 program
-    .parse(process.argv);
+  .parse(process.argv);
 
 if (program.args.length < 1) {
-    console.log('No command specified. See \'postgres-contentful --help\':');
-    program.outputHelp();
-    process.exit(1);
+  console.log('No command specified. See \'postgres-contentful --help\':');
+  program.outputHelp();
+  process.exit(1);
 }
