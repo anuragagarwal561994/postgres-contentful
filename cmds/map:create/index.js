@@ -1,10 +1,9 @@
 const co = require('co');
 const chalk = require('chalk');
-const inquirer = require('inquirer');
 const jsonfile = require('jsonfile');
 const { set, get, chain } = require('lodash');
 const exitModule = require('../../exit');
-const askOverwrite = require('../../questions/ask_overwrite');
+const toOverwrite = require('../../questions/overwrite');
 const getDatabaseInformation = require('./get_database_information');
 const getContentfulInformation = require('./get_contentful_information');
 
@@ -19,12 +18,8 @@ module.exports = (program) => {
       const contentfulAccessToken = program.config.get('access_token');
       const databaseConnectionURI = program.config.get('pg_connection_uri');
 
-      if (!force) {
-        const { overwrite } = yield inquirer.prompt(askOverwrite(output));
-
-        if (overwrite === false) {
-          exit(new Error('Output file already exists'));
-        }
+      if (!force && (yield toOverwrite(output)).overwrite === false) {
+        exit(new Error('Output file already exists'));
       }
 
       const databaseInformation = yield getDatabaseInformation(databaseConnectionURI, schema);

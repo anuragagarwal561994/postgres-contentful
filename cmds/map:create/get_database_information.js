@@ -1,12 +1,11 @@
 const co = require('co');
-const inquirer = require('inquirer');
 
-const askPostgres = require('../../questions/ask_postgres');
-const askRawTableSchema = require('../../questions/ask_rawTableSchema');
+const getPostgres = require('../../questions/postgres');
+const getRawTableSchema = require('../../questions/rawTableSchema');
 
 module.exports = co.wrap(function* exec(connectionURI, schemaName) {
-  const { postgres } = yield inquirer.prompt(askPostgres(connectionURI));
-  const { rawTableSchema } = yield inquirer.prompt(askRawTableSchema(schemaName, postgres));
+  const { postgres } = yield getPostgres(connectionURI);
+  const { rawTableSchema } = yield getRawTableSchema(schemaName, postgres);
 
   return { postgres, rawTableSchema };
 });

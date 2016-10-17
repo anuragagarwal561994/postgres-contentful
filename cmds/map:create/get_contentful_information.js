@@ -1,24 +1,23 @@
 const co = require('co');
-const inquirer = require('inquirer');
 const isUndefined = require('lodash/isUndefined');
 
-const askAccessToken = require('../../questions/ask_accessToken');
-const askSpaceId = require('../../questions/ask_spaceId');
-const askContentTypeSchema = require('../../questions/ask_contentTypeSchema');
+const getAccessToken = require('../../questions/accessToken');
+const getSpaceId = require('../../questions/spaceId');
+const getContentTypeSchema = require('../../questions/contentTypeSchema');
 
 module.exports = co.wrap(function* exec(defaultToken) {
   let accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
   let spaceId = process.env.CONTENTFUL_SPACE_ID;
 
   if (isUndefined(accessToken)) {
-    accessToken = (yield inquirer.prompt(askAccessToken(defaultToken))).accessToken;
+    accessToken = (yield getAccessToken(defaultToken)).accessToken;
   }
 
   if (isUndefined(spaceId)) {
-    spaceId = (yield inquirer.prompt(askSpaceId(accessToken))).spaceId;
+    spaceId = (yield getSpaceId(accessToken)).spaceId;
   }
 
-  const { contentTypeSchema } = yield inquirer.prompt(askContentTypeSchema(accessToken, spaceId));
+  const { contentTypeSchema } = yield getContentTypeSchema(accessToken, spaceId);
 
   return {
     accessToken,
