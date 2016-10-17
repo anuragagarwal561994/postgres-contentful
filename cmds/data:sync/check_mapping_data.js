@@ -1,4 +1,4 @@
-const { chain, get, isPlainObject, map, reject, values } = require('lodash');
+const { chain, get, isPlainObject, map, reject, uniq, values } = require('lodash');
 const Joi = require('joi');
 
 // Custom string validation representing a non empty, blank string
@@ -123,6 +123,20 @@ function checkMappingKeys(mapping) {
 }
 
 /**
+ * Checks if postgres columns in user defined mappings have unique values
+ *
+ * @param {object} mapping - json from mapping file
+ * @throws throws error if there is double mapping of any postgres column with contentful field
+ */
+function checkUniqueColumns(mapping) {
+  const columns = values(mapping.mappings);
+
+  if (uniq(columns).length !== columns.length) {
+    throw new Error('Postgres columns have double reference in mappings section');
+  }
+}
+
+/**
  * Validates the mapping file to check if it is suitable for further process
  *
  * @param {Object} mapping - mapping form the mapping file
@@ -132,6 +146,7 @@ function checkMappingKeys(mapping) {
 module.exports = (mapping, connectingKey) => {
   const result = schema.validate(mapping);
   if (result.error) throw result.error;
+  checkUniqueColumns(mapping);
   checkRequiredColumns([connectingKey, 'contentfulversion'], mapping);
   checkMappingValues(mapping);
   checkMappingKeys(mapping);
