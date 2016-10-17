@@ -1,4 +1,5 @@
 const co = require('co');
+const chalk = require('chalk');
 const jsonfile = require('jsonfile');
 const { uniq, values } = require('lodash');
 const exitModule = require('../../exit');
@@ -51,13 +52,22 @@ module.exports = (program) => {
     }
   });
 
+  const defaults = {
+    connectingKey: 'externalid',
+  };
+  const defaultString = value => chalk.cyan(`[default: ${value}]`);
+
   program
     .command('data:sync <file>')
     .version('0.0.0')
     .description('Synchronizes data from postgres -> contentful')
     .option('--where <where_clause>', 'query data to sync')
     .option('--no-validate', 'to not validate the schema file')
-    .option('--connecting-key <connecting_key>', 'column to be used as connecting key', 'externalid')
+    .option(
+      '--connecting-key <connecting_key>',
+      `column to be used as connecting key ${defaultString(defaults.connectingKey)}`,
+      defaults.connectingKey
+    )
     .option('--log <log_file>', 'file to log response to')
     .action(run);
 };
