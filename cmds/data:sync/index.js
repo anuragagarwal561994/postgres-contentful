@@ -32,7 +32,7 @@ module.exports = (program) => {
             const pgData = yield fetchData(
                 data.pgConnectionURI,
                 data.tableSchema.table_name,
-                uniq([connectingKey, ...values(data.mappings)])
+                uniq([connectingKey, 'contentfulversion', ...values(data.mappings)])
             );
 
             const response = yield sendData(data, pgData, connectingKey);

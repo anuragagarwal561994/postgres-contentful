@@ -58,6 +58,11 @@ module.exports = co.wrap(function *exec(mapping, data, connectingKey) {
     const requestPromises = data.map((originalRow, index) => {
         requestOptions.body.fields = dataToSend[index];
         requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow[connectingKey]}`;
+        if (originalRow.contentfulversion) {
+            requestOptions.headers['X-Contentful-Version'] = originalRow.contentfulversion;
+        } else {
+            delete requestOptions.headers['X-Contentful-Version'];
+        }
         return rp.put(requestOptions);
     });
 
