@@ -1,15 +1,23 @@
 const inquirer = require('inquirer');
 
-module.exports = (connectionURI) => {
+/**
+ * Asks user for postgres connectionURI if it doesn't exists in environment
+ *
+ * @param defaultConnectionURI - default value stored in config
+ * @returns {Promise}
+ */
+module.exports = (defaultConnectionURI) => {
   const question = {
     name: 'postgres',
     type: 'input',
     message: 'Enter your postgreSQL connection string:',
-    default: connectionURI,
+    default: defaultConnectionURI,
     validate(connection) {
       if (connection.trim().length) {
         return true;
       }
+
+      // if empty
       return 'Please enter your postgreSQL connection string';
     },
     when: !process.env.PG_CONNECTION_URI,

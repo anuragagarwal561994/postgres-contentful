@@ -5,6 +5,14 @@ const endpoints = require('../contentful_endpoints');
 
 const requestOptions = { json: true };
 
+/**
+ * Displays list of spaces available for a particular acess_token for the user to choose
+ * Displays an extra option 'Other' to allow user to enter spaceId as input
+ * Max limit of the list depends on the response given by the contentful api
+ *
+ * @param accessToken - Contentful access_token
+ * @returns {Promise}
+ */
 module.exports = (accessToken) => {
   const questions = [
     {
@@ -17,6 +25,7 @@ module.exports = (accessToken) => {
 
         const response = yield rp.get(requestOptions);
 
+        // Maps the display text to be space name and value to be spaceId
         const mapChoices = o => ({ name: o.name, value: o.sys.id });
         return [...response.items.map(mapChoices), { name: 'Other', value: true }];
       }),
@@ -31,6 +40,7 @@ module.exports = (accessToken) => {
           return true;
         }
 
+        // if empty
         return 'Please enter a space id';
       },
       when({ spaceId }) {
