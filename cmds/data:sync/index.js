@@ -8,6 +8,7 @@ const askOverwrite = require('../../ask_overwrite');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
 const sendData = require('./send_data');
+const updateDB = require('./update_db');
 
 module.exports = (program) => {
     const exit = exitModule(program);
@@ -35,6 +36,12 @@ module.exports = (program) => {
             );
 
             const response = yield sendData(data, pgData, connectingKey);
+            yield updateDB(
+                data.pgConnectionURI,
+                data.tableSchema.table_name,
+                response,
+                connectingKey
+            );
 
             if (log) {
                 jsonfile.writeFile(log, response, {spaces: 4}, exit);
@@ -42,6 +49,7 @@ module.exports = (program) => {
                 exit();
             }
         } catch (err) {
+            console.log(err);
             exit(err);
         }
     });
