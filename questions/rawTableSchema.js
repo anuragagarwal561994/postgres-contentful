@@ -25,8 +25,7 @@ module.exports = (schemaName, connectionURI) => {
     type: 'list',
     message: 'Choose a table name:',
     choices: co.wrap(function* getChoices() {
-      const connection = connectionURI || process.env.PG_CONNECTION_URI;
-      const schema = yield getDatabaseSchema(connection, schemaName);
+      const schema = yield getDatabaseSchema(connectionURI, schemaName);
 
       // Merges constraints on database
       const tables = mapValues(schema.tables, (value, tableName) => {
