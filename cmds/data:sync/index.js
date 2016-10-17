@@ -1,8 +1,7 @@
 const co = require('co');
-const chalk = require('chalk');
 const jsonfile = require('jsonfile');
 const { uniq, values } = require('lodash');
-const exitModule = require('../../exit');
+const { exitModule, defaultString } = require('../../commander_helpers');
 const toOverwrite = require('../../questions/overwrite');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
@@ -55,7 +54,6 @@ module.exports = (program) => {
   const defaults = {
     connectingKey: 'externalid',
   };
-  const defaultString = value => chalk.cyan(`[default: ${value}]`);
 
   program
     .command('data:sync <file>')

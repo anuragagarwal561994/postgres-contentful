@@ -1,8 +1,7 @@
 const co = require('co');
-const chalk = require('chalk');
 const jsonfile = require('jsonfile');
 const { set, get, chain } = require('lodash');
-const exitModule = require('../../exit');
+const { exitModule, defaultString } = require('../../commander_helpers');
 const toOverwrite = require('../../questions/overwrite');
 const getDatabaseInformation = require('./get_database_information');
 const getContentfulInformation = require('./get_contentful_information');
@@ -55,7 +54,6 @@ module.exports = (program) => {
     output: 'mappings.json',
     spaces: 4,
   };
-  const defaultString = value => chalk.cyan(`[default: ${value}]`);
 
   program
     .command('map:create')
