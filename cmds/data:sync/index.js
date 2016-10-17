@@ -1,8 +1,9 @@
 const co = require('co');
 const jsonfile = require('jsonfile');
+const inquirer = require('inquirer');
 const { uniq, values } = require('lodash');
 const exitModule = require('../../exit');
-const askOverwrite = require('../../ask_overwrite');
+const askOverwrite = require('../../questions/ask_overwrite');
 const checkMappingData = require('./check_mapping_data');
 const fetchData = require('./fetch_data');
 const sendData = require('./send_data');
@@ -16,7 +17,7 @@ module.exports = (program) => {
       const data = jsonfile.readFileSync(filename, program);
 
       if (log) {
-        const { overwrite } = yield askOverwrite(log);
+        const { overwrite } = yield inquirer.prompt(askOverwrite(log));
 
         if (overwrite === false) {
           exit(new Error('Log file already exists'));

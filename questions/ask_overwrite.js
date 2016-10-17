@@ -1,5 +1,4 @@
 const fs = require('fs');
-const inquirer = require('inquirer');
 
 module.exports = (filename) => {
   let fileExists = true;
@@ -10,13 +9,11 @@ module.exports = (filename) => {
     fileExists = false;
   }
 
-  const question = {
+  return {
     name: 'overwrite',
     type: 'confirm',
     message: `Overwrite ${filename}:`,
     default: false,
     when: fileExists,
   };
-
-  return inquirer.prompt(question);
 };
