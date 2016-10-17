@@ -5,7 +5,7 @@ module.exports = {
   /**
    * Colors the value and adds a default keyword to be displayed in help of a command
    *
-   * @param value - represents a default value
+   * @param {string} value - represents a default value
    * @returns {string}
    */
   defaultString(value) {
@@ -15,8 +15,8 @@ module.exports = {
   /**
    * Exit module for the commands to end gracefully
    *
-   * @param program
-   * @param [onSuccess] - to be called when program exits successfully
+   * @param {Object} program
+   * @param {Function} [onSuccess] - to be called when program exits successfully
    * @returns {function(*=)}
    */
   exitModule(program, onSuccess) {

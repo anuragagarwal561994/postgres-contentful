@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 /**
  * Asks user for postgres connectionURI if it doesn't exists in environment
  *
- * @param defaultConnectionURI - default value stored in config
+ * @param {string} [defaultConnectionURI] - default value stored in config
  * @returns {Promise}
  */
 module.exports = (defaultConnectionURI) => {

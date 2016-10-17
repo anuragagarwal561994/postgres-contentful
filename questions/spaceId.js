@@ -10,7 +10,7 @@ const requestOptions = { json: true };
  * Displays an extra option 'Other' to allow user to enter spaceId as input
  * Max limit of the list depends on the response given by the contentful api
  *
- * @param accessToken - Contentful access_token
+ * @param {string} accessToken - Contentful access_token
  * @returns {Promise}
  */
 module.exports = (accessToken) => {

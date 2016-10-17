@@ -4,7 +4,7 @@ const inquirer = require('inquirer');
 /**
  * Asks to overwrite a file if it exists
  *
- * @param filename
+ * @param {string} filename
  * @returns {Promise}
  */
 module.exports = (filename) => {

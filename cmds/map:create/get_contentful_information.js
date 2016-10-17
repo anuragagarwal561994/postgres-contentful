@@ -9,7 +9,7 @@ const getContentTypeSchema = require('../../questions/contentTypeSchema');
  * Fetches contentful information by asking questions
  * Doesn't ask for access_token, spaceId if already in environment variable
  *
- * @param defaultToken - contentful access_token from config
+ * @param {string} [defaultToken] - contentful access_token from config
  *
  * @typedef {Object} ContentfulInformation
  * @property {string} accessToken - contentful access_token

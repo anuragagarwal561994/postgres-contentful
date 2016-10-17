@@ -14,7 +14,7 @@ module.exports = (program) => {
   });
 
   /**
-   * Main function of program execution
+   * Main function of command execution
    */
   const run = co.wrap(function* exec({ output, spaces, force, schema }) {
     try {

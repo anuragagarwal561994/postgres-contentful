@@ -6,8 +6,8 @@ const { has, mapValues, set } = require('lodash');
 /**
  * Fetches postgres schema and converts it into json
  *
- * @param connectionString - postgres connection string
- * @param schema - default public, schema to get the database structure from
+ * @param {string} connectionString - postgres connection string
+ * @param {string} schema='public' - schema to get the database structure from
  * @return {Promise}
  */
 const getDatabaseSchema = (connectionString, schema = 'public') => PostgresSchema.toJSON(connectionString, schema);
@@ -15,8 +15,8 @@ const getDatabaseSchema = (connectionString, schema = 'public') => PostgresSchem
 /**
  * Displays list of tables in database and asks user to choose from it
  *
- * @param schemaName - schema name to get the database structure from
- * @param connectionURI - postgres connection uri
+ * @param {string} schemaName - schema name to get the database structure from
+ * @param {string} connectionURI - postgres connection uri
  * @returns {Promise}
  */
 module.exports = (schemaName, connectionURI) => {

@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 /**
  * Ask user for accessToken when not given as environment variable
  *
- * @param defaultToken - to display the default access token stored in config
+ * @param {string} [defaultToken] - to display the default access token stored in config
  * @returns {Promise}
  */
 module.exports = (defaultToken) => {

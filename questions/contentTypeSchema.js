@@ -10,8 +10,8 @@ const requestOptions = { json: true };
  * Fetches list of Content Types and ask user to choose from
  * Max Limit of the Content Types displayed is the limit given by Contentful
  *
- * @param accessToken - Contentful access_token
- * @param spaceId - Contentful space_id
+ * @param {string} accessToken - Contentful access_token
+ * @param {string} spaceId - Contentful space_id
  * @returns {Promise}
  */
 module.exports = (accessToken, spaceId) => {

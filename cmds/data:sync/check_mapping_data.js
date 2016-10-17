@@ -125,8 +125,8 @@ function checkMappingKeys(mapping) {
 /**
  * Validates the mapping file to check if it is suitable for further process
  *
- * @param mapping - mapping form the mapping file
- * @param connectingKey - column representing common id between both databases
+ * @param {Object} mapping - mapping form the mapping file
+ * @param {string} connectingKey - column representing common id between both databases
  * @throws if mapping file does not pass validation checks
  */
 module.exports = (mapping, connectingKey) => {
