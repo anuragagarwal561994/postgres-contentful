@@ -9,22 +9,32 @@ const sendData = require('./send_data');
 const updateDB = require('./update_db');
 
 module.exports = (program) => {
+  // exit function, on success displays message
   const exit = exitModule(program, () => {
     program.log.info('Completed transfer');
   });
 
+  /**
+   * Main function of command execution
+   * @param {string} filename - given as argument representing the mapping file
+   */
   const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
     try {
+      // reads the mapping file
       const data = jsonfile.readFileSync(filename, program);
 
+      // if log option is enabled checks if the log file specified already exists
+      // prompts the user to choose to overwrite the log file
       if (log && (yield toOverwrite(log)).overwrite === false) {
         exit(new Error('Log file already exists'));
       }
 
+      // validates the mapping file when --no-validate option is not used
       if (validate) {
         checkMappingData(data, connectingKey);
       }
 
+      // gets the postgres data from the database using information from mapping file
       const pgData = yield fetchData(
         data.pgConnectionURI,
         data.tableSchema.table_name,
@@ -32,7 +42,10 @@ module.exports = (program) => {
         where
       );
 
+      // sends data and receives response from contentful
       const response = yield sendData(data, pgData, connectingKey);
+
+      // updates content version in database from response sent by contentful
       yield updateDB(
         data.pgConnectionURI,
         data.tableSchema.table_name,
@@ -40,6 +53,7 @@ module.exports = (program) => {
         connectingKey
       );
 
+      // if log file is given, response is logged to log file given
       if (log) {
         jsonfile.writeFile(log, response, { spaces: 4 }, exit);
       } else {
@@ -50,10 +64,12 @@ module.exports = (program) => {
     }
   });
 
+  // defines default values to be used and displayed in help
   const defaults = {
     connectingKey: 'externalid',
   };
 
+  // prepares program
   program
     .command('data:sync <file>')
     .version('0.0.0')
