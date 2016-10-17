@@ -86,10 +86,10 @@ function checkMappingKeys(mapping) {
     }
 }
 
-module.exports = (mapping) => {
+module.exports = (mapping, connectingKey) => {
     const result = schema.validate(mapping);
     if (result.error) throw result.error;
-    checkRequiredColumns(['externalid', 'contentfulversion'], mapping);
+    checkRequiredColumns([connectingKey, 'contentfulversion'], mapping);
     checkMappingValues(mapping);
     checkMappingKeys(mapping);
 };

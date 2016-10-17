@@ -12,7 +12,7 @@ const sendData = require('./send_data');
 module.exports = (program) => {
     const exit = exitModule(program);
 
-    const run = co.wrap(function *exec(filename, {validate, log}) {
+    const run = co.wrap(function *exec(filename, {validate, log, connectingKey}) {
         try {
             const data = jsonfile.readFileSync(filename, program);
 
@@ -25,16 +25,16 @@ module.exports = (program) => {
             }
 
             if (validate) {
-                checkMappingData(data);
+                checkMappingData(data, connectingKey);
             }
 
             const pgData = yield fetchData(
                 data.pgConnectionURI,
                 data.tableSchema.table_name,
-                uniq(values(data.mappings))
+                uniq([connectingKey, ...values(data.mappings)])
             );
 
-            const response = yield sendData(data, pgData);
+            const response = yield sendData(data, pgData, connectingKey);
 
             if (log) {
                 jsonfile.writeFile(log, response, {spaces: 4}, exit);
@@ -52,6 +52,7 @@ module.exports = (program) => {
         .description('Synchronizes data from postgres -> contentful')
         .option('--where <where_clause>', 'query data to sync')
         .option('--no-validate', 'to not validate the schema file')
+        .option('--connecting-key <connecting_key>', 'column to be used as connecting key', 'externalid')
         .option('--log <log_file>', 'file to log response to')
         .action(run);
 

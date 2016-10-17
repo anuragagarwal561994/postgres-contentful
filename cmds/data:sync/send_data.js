@@ -40,7 +40,7 @@ const sendRequests = co.wrap(function *exec(requests, limit = 10, time = 1000) {
     return result;
 });
 
-module.exports = co.wrap(function *exec(mapping, data) {
+module.exports = co.wrap(function *exec(mapping, data, connectingKey) {
     const requestOptions = {
         auth: {bearer: mapping.accessToken},
         json: true,
@@ -57,7 +57,7 @@ module.exports = co.wrap(function *exec(mapping, data) {
     const dataToSend = prepareData(data, mapping.mappings);
     const requestPromises = data.map((originalRow, index) => {
         requestOptions.body.fields = dataToSend[index];
-        requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow.externalid}`;
+        requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow[connectingKey]}`;
         return rp.put(requestOptions);
     });
 
