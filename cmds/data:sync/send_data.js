@@ -2,12 +2,16 @@ const co = require('co');
 const wait = require('co-wait');
 const rp = require('request-promise');
 const ProgressBar = require('progress');
-const {get, invert, mapKeys, mapValues} = require('lodash');
+const {get, invert, mapKeys, mapValues, pick} = require('lodash');
 const endpoints = require('../../contentful_endpoints');
 
 function prepareData(data, mapping) {
     const reverseMapping = invert(mapping);
-    const convertToContentTypeFields = row => mapKeys(row, (value, key) => reverseMapping[key]);
+    const columns = Object.keys(reverseMapping);
+    const convertToContentTypeFields = row => mapKeys(
+        pick(row, columns),
+        (value, key) => reverseMapping[key]
+    );
     const addLocaleKey = value => ({'en-US': value});
     return data.map(convertToContentTypeFields)
         .map(column => mapValues(column, addLocaleKey));
@@ -51,9 +55,9 @@ module.exports = co.wrap(function *exec(mapping, data) {
     requestOptions.headers['X-Contentful-Content-Type'] = contentTypeId;
 
     const dataToSend = prepareData(data, mapping.mappings);
-    const requestPromises = dataToSend.map((row) => {
-        requestOptions.body.fields = row;
-        requestOptions.uri = `${ENTRIES_ENDPOINT}/${row.externalId['en-US']}`;
+    const requestPromises = data.map((originalRow, index) => {
+        requestOptions.body.fields = dataToSend[index];
+        requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow.externalid}`;
         return rp.put(requestOptions);
     });
 
