@@ -2,27 +2,17 @@ const co = require('co');
 const wait = require('co-wait');
 const rp = require('request-promise');
 const ProgressBar = require('progress');
-const { get, invert, mapKeys, mapValues, pick } = require('lodash');
+const { get, keys, mapValues, pick } = require('lodash');
 const endpoints = require('../../contentful_endpoints');
 
 /**
  * Transforms data received from postgres in form accepted by Contentful
  *
- * @param {Object} data - from postgres
- * @param {Object} mapping - from mapping file
+ * @param {Object} row - from postgres
+ * @param {string[]} fields - contentful field names from mapping file
  * @returns {Object[]}
  */
-function prepareData(data, mapping) {
-  const reverseMapping = invert(mapping);
-  const columns = Object.keys(reverseMapping);
-  const convertToContentTypeFields = row => mapKeys(
-    pick(row, columns),
-    (value, key) => reverseMapping[key]
-  );
-  const addLocaleKey = value => ({ 'en-US': value });
-  return data.map(convertToContentTypeFields)
-    .map(column => mapValues(column, addLocaleKey));
-}
+const prepareRow = (row, fields) => mapValues(pick(row, fields), column => ({ 'en-US': column }));
 
 /**
  * Sends limit number of requests at interval of time to not hit api limit of Contentful
@@ -70,11 +60,12 @@ const sendRequests = co.wrap(function* exec(requests, limit = 10, time = 1000) {
  * Performs tasks to prepare data and request promises to send
  *
  * @param {object} mapping - mapping file json
- * @param {object} data - postgres data
- * @param {string} connectingKey - column representing common id between both databases
+ * @param {object} data - postgres data transformed with contentful fields
+ * @param {string} connectingKey - column representing common id between both databases in data
+ * @param {string} versionKey - column representing current contactful version number in data
  * @type {Promise}
  */
-module.exports = co.wrap(function* exec(mapping, data, connectingKey) {
+module.exports = co.wrap(function* exec(mapping, data, connectingKey, versionKey) {
   // Request options to send
   const requestOptions = {
     auth: { bearer: mapping.accessToken },
@@ -92,19 +83,21 @@ module.exports = co.wrap(function* exec(mapping, data, connectingKey) {
   // Necessary header containing the ContentType to which the entry belongs
   requestOptions.headers['X-Contentful-Content-Type'] = contentTypeId;
 
-  const dataToSend = prepareData(data, mapping.mappings);
-  const requestPromises = data.map((originalRow, index) => {
-    requestOptions.body.fields = dataToSend[index];
+  const contentfulFields = keys(mapping.mappings);
+  const requestPromises = data.map((originalRow) => {
     requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow[connectingKey]}`;
 
     if (originalRow.contentfulversion) {
       // For updating an entry, api requires the current version of the Contentful Entry
       // Here we retrieve it from pgDatabase as we store it there
-      requestOptions.headers['X-Contentful-Version'] = originalRow.contentfulversion;
+      requestOptions.headers['X-Contentful-Version'] = originalRow[versionKey];
     } else {
       // No contentful version header is required for insert operation
       delete requestOptions.headers['X-Contentful-Version'];
     }
+
+    // fills up the body to send
+    requestOptions.body.fields = prepareRow(originalRow, contentfulFields);
 
     return rp.put(requestOptions);
   });

@@ -1,6 +1,6 @@
 const co = require('co');
 const jsonfile = require('jsonfile');
-const { uniq, values } = require('lodash');
+const { has, invert } = require('lodash');
 const { exitModule, defaultString } = require('../../commander_helpers');
 const toOverwrite = require('../../questions/overwrite');
 const checkMappingData = require('./check_mapping_data');
@@ -34,16 +34,26 @@ module.exports = (program) => {
         checkMappingData(data, connectingKey);
       }
 
+      const iMapping = invert(data.mappings);
+      const versionKey = 'contentfulversion';
+
       // gets the postgres data from the database using information from mapping file
       const pgData = yield fetchData(
         data.pgConnectionURI,
         data.tableSchema.table_name,
-        uniq([connectingKey, 'contentfulversion', ...values(data.mappings)]),
+        iMapping,
+        [connectingKey, versionKey],
         where
       );
 
+      // get connectingKey and versionKey as represented in data got from postgres
+      // these keys will be same if was not included in mappings else they will
+      // have the names of the mapped field names
+      const pConnectingKey = has(iMapping, connectingKey) ? iMapping[connectingKey] : connectingKey;
+      const pVersionKey = has(iMapping, versionKey) ? iMapping[versionKey] : versionKey;
+
       // sends data and receives response from contentful
-      const response = yield sendData(data, pgData, connectingKey);
+      const response = yield sendData(data, pgData, pConnectingKey, pVersionKey);
 
       // updates content version in database from response sent by contentful
       yield updateDB(
