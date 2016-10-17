@@ -13,7 +13,7 @@ const updateDB = require('./update_db');
 module.exports = (program) => {
     const exit = exitModule(program);
 
-    const run = co.wrap(function *exec(filename, {validate, log, connectingKey}) {
+    const run = co.wrap(function *exec(filename, {validate, log, connectingKey, where}) {
         try {
             const data = jsonfile.readFileSync(filename, program);
 
@@ -32,7 +32,8 @@ module.exports = (program) => {
             const pgData = yield fetchData(
                 data.pgConnectionURI,
                 data.tableSchema.table_name,
-                uniq([connectingKey, 'contentfulversion', ...values(data.mappings)])
+                uniq([connectingKey, 'contentfulversion', ...values(data.mappings)]),
+                where
             );
 
             const response = yield sendData(data, pgData, connectingKey);
