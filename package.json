@@ -7,7 +7,6 @@
     "postgres-contentful": "./bin/postgres-contentful"
   },
   "scripts": {
-    "test": "mocha -R spec"
   },
   "author": {
     "name": "Anurag Agarwal",
