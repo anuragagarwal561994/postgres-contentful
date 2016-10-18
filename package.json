@@ -34,7 +34,7 @@
     "joi": "^9.1.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.16.4",
-    "pg-json-schema-export": "^0.13.7",
+    "pg-json-schema-export": "https://github.com/anuragagarwal561994/pg-json-schema-export#10917316df0553f700ad277c17df62c0dd9ecc54",
     "pg-promise": "^5.3.4",
     "progress": "^1.1.8",
     "request": "^2.75.0",

@@ -6,6 +6,8 @@ A CLI app to insert/update content from a postgresSQL database.table to Contentf
 
 **Note:** Tested on Mac OS X (Sierra 10.12), with node 6.7 and npm 3.10.3
 
+**Note:** The cli tool uses `pg-json-schema-export` package. The package has a bug in which if there are capital letters in table name it might throw an error. As of now I have submitted a pull request resolving this error and used my own git url as dependency in package.json. But when gets resolved, it is advisable to switch package.json back to pg-json-schema-export. There may occur some issues like this, I have tried to resolve what I have came across. 
+
 ## Usage
 
 In development use:
