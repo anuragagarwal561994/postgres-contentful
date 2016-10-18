@@ -121,6 +121,8 @@ $ npm run lint:fix
 
 14. Displays progress bar to track how much data is yet to be pushed in to Contentful.
 
+15. Command to just validate the mappings file by using `postgres-contentful map:validate <file>`.
+
 ## License
 
 Copyright (c) 2016 Anurag Agarwal
