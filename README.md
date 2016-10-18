@@ -18,6 +18,20 @@ To make the command available to use directly use `npm link` and then the comman
 $ postgres-contentful --help
 ```
 
+## Seed data for testing
+
+Seed folder has been initialized with sequelize and provides migration folder, config folder and seeders to seed database before you begin to test.
+
+In config folder replace the environment you will be using (by default `development` is used) with your database config. Make sure you already don't have `content_section` table in your db and you have an existent db with the name mentioned in config file.
+
+Use `npm run migrate:up` to run migration and create a table `content-section` in database.
+
+Use `npm run seed:db` to delete all the entries already proesent in this table and fill it up with seed values.
+
+Use `npm run migrate:down` to drop table `content-section` or to do down migration.
+
+**Note:** These commands are tested on Mac and not on windows so if for some reason they do not work on windows or any other platform use `npm run -g sequelize-cli` and follow package.json scripts to repeat the commands with `sequelize` command line tool.
+
 ## Publish
 
 If you’ve never published a package to npm before, you can read the [docs](https://docs.npmjs.com/getting-started/publishing-npm-packages) to get started with it.
