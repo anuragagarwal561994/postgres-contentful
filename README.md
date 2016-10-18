@@ -28,13 +28,13 @@ Seed folder has been initialized with sequelize and provides migration folder, c
 
 In config folder replace the environment you will be using (by default `development` is used) with your database config. Make sure you already don't have `content_section` table in your db and you have an existent db with the name mentioned in config file.
 
-Use `npm run migrate:up` to run migration and create a table `content-section` in database.
+Use `npm run sequelize db:migrate` to run migration and create a table `content_section` in database.
 
-Use `npm run seed:db` to delete all the entries already proesent in this table and fill it up with seed values.
+Use `npm run sequelize db:seed` to fill database with seed values (make sure it doesn't have values that will conflict with seed values, use `npm run sequelize db:seed:undo` to truncate the content_section table.
 
-Use `npm run migrate:down` to drop table `content-section` or to do down migration.
+Use `npm run sequelize db:migrate:undo` to drop table `content_section` or to do down migration.
 
-**Note:** These commands are tested on Mac and not on windows so if for some reason they do not work on windows or any other platform use `npm run -g sequelize-cli` and follow package.json scripts to repeat the commands with `sequelize` command line tool.
+Use `--` and then pass any parameters to these commands like `npm run sequelize db:migrate -- --env production`.
 
 ## Publish
 
