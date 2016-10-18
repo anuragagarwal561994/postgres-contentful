@@ -4,6 +4,8 @@
 
 A CLI app to insert/update content from a postgresSQL database.table to Contentful.com content type.
 
+**Note:** Tested on Mac OS X (Sierra 10.12), with node 6.7 and npm 3.10.3
+
 ## Usage
 
 In development use:
