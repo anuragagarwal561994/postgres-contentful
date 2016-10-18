@@ -11,7 +11,7 @@ module.exports = (program) => {
   /**
    * Main function of command execution
    * @param {string} filename - given as argument representing the mapping file
-   * @param {string} connectingKey=externalid - column name acting as a link both databases
+   * @param {string} connectingKey=externalId - column name acting as a link both databases
    */
   const run = (filename, { connectingKey }) => {
     try {
@@ -27,7 +27,7 @@ module.exports = (program) => {
 
   // defines default values to be used and displayed in help
   const defaults = {
-    connectingKey: 'externalid',
+    connectingKey: 'externalId',
   };
 
   // prepares program

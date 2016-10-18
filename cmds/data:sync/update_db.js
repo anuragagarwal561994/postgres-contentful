@@ -21,7 +21,7 @@ module.exports = co.wrap(function* exec(connection, tableName, response, connect
   // Forms and makes all requests to update database in parallel
   yield response.map((row) => {
     const { version, id } = row.sys;
-    const query = `${uQuery} SET contentfulversion=${version} WHERE "${connectingKey}"='${id}'`;
+    const query = `${uQuery} SET "contentfulVersion"=${version} WHERE "${connectingKey}"='${id}'`;
     return db.query(query);
   });
 

@@ -87,7 +87,7 @@ module.exports = co.wrap(function* exec(mapping, data, connectingKey, versionKey
   const requestPromises = data.map((originalRow) => {
     requestOptions.uri = `${ENTRIES_ENDPOINT}/${originalRow[connectingKey]}`;
 
-    if (originalRow.contentfulversion) {
+    if (originalRow.contentfulVersion) {
       // For updating an entry, api requires the current version of the Contentful Entry
       // Here we retrieve it from pgDatabase as we store it there
       requestOptions.headers['X-Contentful-Version'] = originalRow[versionKey];

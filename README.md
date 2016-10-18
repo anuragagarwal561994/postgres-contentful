@@ -74,8 +74,8 @@ $ npm run lint:fix
 
 2. Updates/Inserts records from postgres to contentful. Stores contentful version of entry in db for the same. Create a column `contentfulVersion` in database which should be an integer and can be null.
    
-3. Connects records in postgres to entries in contentful with an id (field `externalid` by default). All entries are updated/inserted using this id. So it is necessary for this column to be present in the database.\
-   It should have a unique constraint to avoid conflict. One can even configure a column name except `externalid` (but it should have unique constraint - check for this has not been implemented so it should be done on users part) by using
+3. Connects records in postgres to entries in contentful with an id (field `externalId` by default). All entries are updated/inserted using this id. So it is necessary for this column to be present in the database.\
+   It should have a unique constraint to avoid conflict. One can even configure a column name except `externalId` (but it should have unique constraint - check for this has not been implemented so it should be done on users part) by using
    
     ```
     $ postgres-contentful data:sync <file> --connecting-key <column_name>

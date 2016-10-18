@@ -147,7 +147,7 @@ module.exports = (mapping, connectingKey) => {
   const result = schema.validate(mapping);
   if (result.error) throw result.error;
   checkUniqueColumns(mapping);
-  checkRequiredColumns([connectingKey, 'contentfulversion'], mapping);
+  checkRequiredColumns([connectingKey, 'contentfulVersion'], mapping);
   checkMappingValues(mapping);
   checkMappingKeys(mapping);
 };

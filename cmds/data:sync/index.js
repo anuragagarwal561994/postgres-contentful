@@ -19,7 +19,7 @@ module.exports = (program) => {
    * @param {string} filename - given as argument representing the mapping file
    * @param {boolean} validate - if false does not validate the mapping file
    * @param {boolean} log - file to log response to
-   * @param {string} connectingKey=externalid - column name acting as a link both databases
+   * @param {string} connectingKey=externalId - column name acting as a link both databases
    * @param {string} where - where clause to be used to query data from postgres database
    */
   const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
@@ -39,7 +39,7 @@ module.exports = (program) => {
       }
 
       const iMapping = invert(data.mappings);
-      const versionKey = 'contentfulversion';
+      const versionKey = 'contentfulVersion';
 
       // gets the postgres data from the database using information from mapping file
       const pgData = yield fetchData(
@@ -80,7 +80,7 @@ module.exports = (program) => {
 
   // defines default values to be used and displayed in help
   const defaults = {
-    connectingKey: 'externalid',
+    connectingKey: 'externalId',
   };
 
   // prepares program
