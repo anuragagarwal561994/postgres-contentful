@@ -9,7 +9,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "seed:db": "(cd seed; ../node_modules/.bin/sequelize db:seed:undo:all; ../node_modules/.bin/sequelize db:seed:all)"
+    "seed:db": "(cd seed; ../node_modules/.bin/sequelize db:seed:undo:all; ../node_modules/.bin/sequelize db:seed:all)",
+    "migrate:up": "(cd seed; ../node_modules/.bin/sequelize db:migrate)",
+    "migrate:down": "(cd seed; ../node_modules/.bin/sequelize db:migrate:undo)"
   },
   "author": {
     "name": "Anurag Agarwal",
