@@ -10,11 +10,11 @@ const { has, toPairs, reject } = require('lodash');
  * @param {string} table - postgres table name from where to fetch data
  * @param {Object.<string,string>} columnWiseMapping - inverted column mapping from mapping file
  * @param {string[]} extraColumns - required columns to include, might not be part of columnMapping
- * @param {string} where='1=1' - where condition to query
+ * @param {string} where - where condition to query
  * @throws when any error occurs with connection or fetching data from the database
  * @return {Object[]}
  */
-module.exports = co.wrap(function* exec(con, table, columnWiseMapping, extraColumns, where = '1=1') {
+module.exports = co.wrap(function* exec(con, table, columnWiseMapping, extraColumns, where) {
   const db = pgp(con);
 
   yield db.connect();

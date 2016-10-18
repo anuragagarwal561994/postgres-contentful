@@ -3,6 +3,7 @@ const jsonfile = require('jsonfile');
 const { has, invert } = require('lodash');
 const { exitModule, defaultString } = require('../../commander_helpers');
 const toOverwrite = require('../../questions/overwrite');
+const getWhere = require('../../questions/where');
 const checkMappingData = require('./../map:validate/check_mapping_data');
 const fetchData = require('./fetch_data');
 const sendData = require('./send_data');
@@ -20,9 +21,8 @@ module.exports = (program) => {
    * @param {boolean} validate - if false does not validate the mapping file
    * @param {boolean} log - file to log response to
    * @param {string} connectingKey=externalId - column name acting as a link both databases
-   * @param {string} where - where clause to be used to query data from postgres database
    */
-  const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
+  const run = co.wrap(function* exec(filename, { validate, log, connectingKey }) {
     try {
       // reads the mapping file
       const data = jsonfile.readFileSync(filename, program);
@@ -40,6 +40,8 @@ module.exports = (program) => {
 
       const iMapping = invert(data.mappings);
       const versionKey = 'contentfulVersion';
+
+      const { where } = yield getWhere();
 
       // gets the postgres data from the database using information from mapping file
       const pgData = yield fetchData(
@@ -88,7 +90,6 @@ module.exports = (program) => {
     .command('data:sync <file>')
     .version('0.0.0')
     .description('Synchronizes data from postgres -> contentful')
-    .option('--where <where_clause>', 'query data to sync')
     .option('--no-validate', 'to not validate the schema file')
     .option(
       '--connecting-key <connecting_key>',

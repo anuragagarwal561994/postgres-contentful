@@ -115,7 +115,7 @@ $ npm run lint:fix
 
 10. If postgres schema is not public one can use `--schema <schema_name>` to fetch structure from that schema in `map:create`.
 
-11. Use `--where <where_clause>` (where caluse within quotes) to limit the number of rows to be synced with contentful in `data:sync` command. Make sure you use column names with within double quotes or else postgres might not be able to identify some column names (like the ones with capital letters).
+11. Asks where in data:sync command with default value `1=1` (not shown in video as first it was command line argument but removed because of quote issues) to limit the number of rows to be synced with contentful. Make sure you use column names within double quotes and values in single quotes or else postgres might not be able to identify some column names (like the ones with capital letters).
 
 12. In generated mapping file, already fills the mappings key with content fields of Contentful ContentType with null values for further easing the process.
 
