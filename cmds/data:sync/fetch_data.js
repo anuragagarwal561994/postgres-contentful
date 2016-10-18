@@ -20,11 +20,11 @@ module.exports = co.wrap(function* exec(con, table, columnWiseMapping, extraColu
   yield db.connect();
   const columns = [
     // to transform column names to contentful field names
-    ...toPairs(columnWiseMapping).map(p => `${p[0]} as "${p[1]}"`),
+    ...toPairs(columnWiseMapping).map(p => `"${p[0]}" as "${p[1]}"`),
     // to include extra columns
     ...reject(extraColumns, col => has(columnWiseMapping, col)),
   ];
-  const result = yield db.query(`SELECT ${columns.join(', ')} FROM ${table} WHERE ${where}`);
+  const result = yield db.query(`SELECT ${columns.join(', ')} FROM "${table}" WHERE ${where}`);
   pgp.end();
 
   return result;
