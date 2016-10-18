@@ -17,6 +17,10 @@ module.exports = (program) => {
   /**
    * Main function of command execution
    * @param {string} filename - given as argument representing the mapping file
+   * @param {boolean} validate - if false does not validate the mapping file
+   * @param {boolean} log - file to log response to
+   * @param {string} connectingKey=externalid - column name acting as a link both databases
+   * @param {string} where - where clause to be used to query data from postgres database
    */
   const run = co.wrap(function* exec(filename, { validate, log, connectingKey, where }) {
     try {

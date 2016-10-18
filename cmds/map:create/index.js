@@ -15,6 +15,11 @@ module.exports = (program) => {
 
   /**
    * Main function of command execution
+   *
+   * @param {string} output=mappings.json - output json file
+   * @param {number} spaces=4 - spaces to include in output file
+   * @param {boolean} force - orce overwrite of output file
+   * @param {string} schema - to choose schema other than public
    */
   const run = co.wrap(function* exec({ output, spaces, force, schema }) {
     try {
